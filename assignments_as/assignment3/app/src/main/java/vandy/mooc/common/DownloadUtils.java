@@ -121,6 +121,7 @@ public class DownloadUtils {
      * @return Absolute path to the downloaded song file on the file
      * system.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static Uri downloadSong(Context context, Uri url, Uri directoryPathname) {
         try {
             if (!Utils.isExternalStorageWritable()) return null;

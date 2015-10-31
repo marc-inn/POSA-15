@@ -44,7 +44,7 @@ public class ImageLoader
     /**
      * Map storing ReentrantLocks for each file.
      */
-    private final Map<String, ReentrantLock> fileLocks = new WeakHashMap<String, ReentrantLock>();
+    private final Map<String, ReentrantLock> fileLocks = new WeakHashMap<>();
 
     /**
      * Drawable that is displayed while the image is loading
@@ -196,7 +196,7 @@ public class ImageLoader
         ImageLoaderWorkOrder wo = param[0];
 
         // Obtain a lock on this image file.
-        ReentrantLock lock = getFileLock(wo.getmFilePath());
+        ReentrantLock lock = getFileLock(wo.getFilePath());
         lock.lock();
 
         Bitmap result = null;
@@ -204,10 +204,10 @@ public class ImageLoader
         try {
 
             // Retrieve data from the work order
-            ImageViewHolder holder = wo.getmImageViewHolder();
-            String filepath = wo.getmFilePath();
-            int width = wo.getmTargetWidth();
-            int height = wo.getmTargetHeight();
+            ImageViewHolder holder = wo.getImageViewHolder();
+            String filepath = wo.getFilePath();
+            int width = wo.getTargetWidth();
+            int height = wo.getTargetHeight();
 
             // Check that the view is still valid
             checkImageView(holder, filepath);
@@ -226,7 +226,7 @@ public class ImageLoader
             lock.unlock();
         }
 
-        return new ImageLoaderWorkResult(wo.getmImageViewHolder(), wo.getmFilePath(), result);
+        return new ImageLoaderWorkResult(wo.getImageViewHolder(), wo.getFilePath(), result);
     }
 
     /**
@@ -238,15 +238,15 @@ public class ImageLoader
     @Override
     public void onPostExecute(ImageLoaderWorkResult result) {
 
-        ImageViewHolder holder = result.getmImageViewHolder();
-        String filepath = result.getmFilePath();
+        ImageViewHolder holder = result.getImageViewHolder();
+        String filepath = result.getFilePath();
 
         // Check that the ImageView is still valid
-        if (result != null && !holder.isCollected() && !isViewReused(holder, filepath)) {
-            addBitmapToCache(filepath, result.getmBitmap());
+        if (!holder.isCollected() && !isViewReused(holder, filepath)) {
+            addBitmapToCache(filepath, result.getBitmap());
 
             // Display the loaded bitmap
-            holder.getWrappedImageView().setImageBitmap(result.getmBitmap());
+            holder.getWrappedImageView().setImageBitmap(result.getBitmap());
         }
     }
 

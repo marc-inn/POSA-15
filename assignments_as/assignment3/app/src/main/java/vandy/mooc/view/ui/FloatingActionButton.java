@@ -67,6 +67,7 @@ public class FloatingActionButton extends View {
 
         this.color = a.getColor(R.styleable.FabView_fabColor, Color.WHITE);
         this.drawable = a.getDrawable(R.styleable.FabView_fabDrawable);
+        assert drawable != null;
         this.mBitmap = ((BitmapDrawable) drawable).getBitmap();
 
         a.recycle();
@@ -77,7 +78,7 @@ public class FloatingActionButton extends View {
     /**
      * Sets the Color of FloatingActionButton.
      *
-     * @param FloatingActionButtonColor
+     * @param color
      */
     public void setFloatingActionButtonColor(int color) {
         this.color = color;
@@ -87,7 +88,7 @@ public class FloatingActionButton extends View {
     /**
      * Sets the Icon of FloatingActionButton.
      *
-     * @param FloatingActionButtonDrawable
+     * @param drawable
      */
     public void setFloatingActionButtonDrawable(Drawable drawable) {
         this.mBitmap = ((BitmapDrawable) drawable).getBitmap();
@@ -115,7 +116,7 @@ public class FloatingActionButton extends View {
     /**
      * Hook method called to draw the View on the Canvas.
      *
-     * @param canvas
+     * @param canvas Canvas
      */
     @Override
     protected void onDraw(Canvas canvas) {
@@ -134,7 +135,7 @@ public class FloatingActionButton extends View {
     /**
      * Hook method called when View is Touched.
      *
-     * @param event
+     * @param event MotionEvent
      */
     @SuppressLint("ClickableViewAccessibility")
     @Override

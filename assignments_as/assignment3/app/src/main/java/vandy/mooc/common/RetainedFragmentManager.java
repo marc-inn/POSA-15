@@ -49,7 +49,7 @@ public class RetainedFragmentManager {
     /**
      * Initializes the RetainedFragment the first time it's called.
      *
-     * @returns true if it's first time the method's been called, else
+     * @return true if it's first time the method's been called, else
      * false.
      */
     public boolean firstTimeIn() {

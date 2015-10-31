@@ -33,27 +33,27 @@ public class ImageLoaderWorkResult {
         mBitmap = bitmap;
     }
 
-    public ImageViewHolder getmImageViewHolder() {
+    public ImageViewHolder getImageViewHolder() {
         return mImageViewHolder;
     }
 
-    public void setmImageViewHolder(ImageViewHolder mImageViewHolder) {
+    public void setImageViewHolder(ImageViewHolder mImageViewHolder) {
         this.mImageViewHolder = mImageViewHolder;
     }
 
-    public String getmFilePath() {
+    public String getFilePath() {
         return mFilePath;
     }
 
-    public void setmFilePath(String mFilePath) {
+    public void setFilePath(String mFilePath) {
         this.mFilePath = mFilePath;
     }
 
-    public Bitmap getmBitmap() {
+    public Bitmap getBitmap() {
         return mBitmap;
     }
 
-    public void setmBitmap(Bitmap mBitmap) {
+    public void setBitmap(Bitmap mBitmap) {
         this.mBitmap = mBitmap;
     }
 }

@@ -43,7 +43,7 @@ public class ImageDownloadsModel implements MVP.ProvidedModelOps {
     /**
      * Hook method called to shutdown the Model layer.
      *
-     * @param isChangeConfigurations True if a runtime configuration triggered the onDestroy() call.
+     * @param isChangingConfigurations True if a runtime configuration triggered the onDestroy() call.
      */
     @Override
     public void onDestroy(boolean isChangingConfigurations) {

@@ -70,7 +70,7 @@ public class BitmapUtils {
      * a new picture, and updates the current photo path to reflect
      * where the photo will be saved
      *
-     * @param actionCode
+     * @param albumDir
      */
     public static Intent getTakePictureIntent(File albumDir) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

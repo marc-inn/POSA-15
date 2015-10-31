@@ -83,8 +83,8 @@ public class ViewPagerActivity extends FragmentActivity {
      * a ViewPager
      *
      * @param directoryPathname Filepath storing images to display
-     * @param pos               Position of starting image
-     * @return
+     * @param position               Position of starting image
+     * @return Intent
      */
     public static Intent makeIntent(String directoryPathname, int position) {
         return new Intent(ACTION_DISPLAY_IMAGES_SWIPE).setDataAndType(Uri.parse(directoryPathname),

@@ -45,35 +45,35 @@ public class ImageLoaderWorkOrder {
      * Getters and setters
      */
 
-    public ImageViewHolder getmImageViewHolder() {
+    public ImageViewHolder getImageViewHolder() {
         return mImageViewHolder;
     }
 
-    public void setmImageViewHolder(ImageViewHolder mImageViewHolder) {
+    public void setImageViewHolder(ImageViewHolder mImageViewHolder) {
         this.mImageViewHolder = mImageViewHolder;
     }
 
-    public String getmFilePath() {
+    public String getFilePath() {
         return mFilePath;
     }
 
-    public void setmFilePath(String mFilePath) {
+    public void setFilePath(String mFilePath) {
         this.mFilePath = mFilePath;
     }
 
-    public int getmTargetWidth() {
+    public int getTargetWidth() {
         return mTargetWidth;
     }
 
-    public void setmTargetWidth(int mTargetWidth) {
+    public void setTargetWidth(int mTargetWidth) {
         this.mTargetWidth = mTargetWidth;
     }
 
-    public int getmTargetHeight() {
+    public int getTargetHeight() {
         return mTargetHeight;
     }
 
-    public void setmTargetHeight(int mTargetHeight) {
+    public void setTargetHeight(int mTargetHeight) {
         this.mTargetHeight = mTargetHeight;
     }
 }
