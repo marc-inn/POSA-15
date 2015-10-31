@@ -6,16 +6,13 @@ import android.os.AsyncTask;
  * Defines a generic framework for running an AsyncTask that delegates
  * its operations to the @a Ops parameter.
  */
-public class GenericAsyncTask<Params,
-                              Progress,
-                              Result, 
-                              Ops extends GenericAsyncTaskOps<Params, Progress, Result>>
-      extends AsyncTask<Params, Progress, Result> {
+public class GenericAsyncTask<Params, Progress, Result, Ops extends GenericAsyncTaskOps<Params, Progress, Result>>
+        extends AsyncTask<Params, Progress, Result> {
     /**
      * Debugging tag used by the Android logger.
      */
     protected final String TAG = getClass().getSimpleName();
-    
+
     /**
      * Reference to the enclosing Ops object.
      */
@@ -25,7 +22,7 @@ public class GenericAsyncTask<Params,
      * Constructor initializes the field.
      */
     public GenericAsyncTask(Ops ops) {
-	mOps = ops;
+        mOps = ops;
     }
 
     /**

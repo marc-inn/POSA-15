@@ -1,12 +1,13 @@
 package vandy.mooc;
 
+import android.content.Context;
+import android.net.Uri;
+
 import java.util.ArrayList;
 
 import vandy.mooc.common.ContextView;
 import vandy.mooc.common.ModelOps;
 import vandy.mooc.common.PresenterOps;
-import android.content.Context;
-import android.net.Uri;
 
 /**
  * Defines the interfaces for the Download Image Viewer application
@@ -22,8 +23,7 @@ public interface MVP {
      * ContextView interface so the Model layer can access Context's
      * defined in the View layer.
      */
-    public interface RequiredViewOps
-           extends ContextView {
+    interface RequiredViewOps extends ContextView {
         /**
          * Make the ProgressBar visible.
          */
@@ -42,8 +42,7 @@ public interface MVP {
         /**
          * Handle failure to download an image.
          */
-        void reportDownloadFailure(Uri url,
-                                   boolean downloadsComplete);
+        void reportDownloadFailure(Uri url, boolean downloadsComplete);
 
         /**
          * Start the DisplayImagesActivity to display the results of
@@ -60,8 +59,7 @@ public interface MVP {
      * MVP.RequiredViewOps interface used to define the parameter
      * that's passed to the onConfigurationChange() method.
      */
-    public interface ProvidedPresenterOps
-           extends PresenterOps<MVP.RequiredViewOps> {
+    interface ProvidedPresenterOps extends PresenterOps<MVP.RequiredViewOps> {
         /**
          * Get the list of URLs.
          */
@@ -85,15 +83,13 @@ public interface MVP {
      * so the Model layer can access Context's defined in the View
      * layer.
      */
-    public interface RequiredPresenterOps
-           extends ContextView {
+    interface RequiredPresenterOps extends ContextView {
         /**
          * Interact with the View layer to display the
-         * downloaded/filtered images when all processing 
+         * downloaded/filtered images when all processing
          * is complete.
          */
-        void onProcessingComplete(Uri url,
-                                  Uri pathToImageFile);
+        void onProcessingComplete(Uri url, Uri pathToImageFile);
     }
 
     /**
@@ -104,27 +100,19 @@ public interface MVP {
      * interface used to define the argument passed to the
      * onConfigurationChange() method.
      */
-    public interface ProvidedModelOps
-           extends ModelOps<MVP.RequiredPresenterOps> {
+    interface ProvidedModelOps extends ModelOps<MVP.RequiredPresenterOps> {
         /**
          * Download the image located at the provided Internet url
          * using the URL class, store it on the android file system
          * using a FileOutputStream, and return the path to the image
          * file on disk.
          *
-         * @param context
-         *          The context in which to write the file.
-         * @param url 
-         *          The URL of the image to download.
-         * @param directoryPathname 
-         *          Pathname of the directory to write the file.
-         * 
-         * @return 
-         *        Absolute path to the downloaded image file on the file
-         *        system.
+         * @param context           The context in which to write the file.
+         * @param url               The URL of the image to download.
+         * @param directoryPathname Pathname of the directory to write the file.
+         * @return Absolute path to the downloaded image file on the file
+         * system.
          */
-         Uri downloadImage(Context context,
-                                 Uri url,
-                                 Uri directoryPathname);
+        Uri downloadImage(Context context, Uri url, Uri directoryPathname);
     }
 }

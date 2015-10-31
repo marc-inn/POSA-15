@@ -1,5 +1,10 @@
 package vandy.mooc.presenter;
 
+import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -10,10 +15,6 @@ import vandy.mooc.MVP;
 import vandy.mooc.common.GenericPresenter;
 import vandy.mooc.common.Utils;
 import vandy.mooc.model.ImageDownloadsModel;
-import android.content.Context;
-import android.net.Uri;
-import android.os.Environment;
-import android.util.Log;
 
 /**
  * This class defines all the image-related operations.  It implements
@@ -22,34 +23,31 @@ import android.util.Log;
  * in Bridge pattern and the role of the "Presenter" in the
  * Model-View-Presenter pattern.
  */
-public class ImagePresenter 
-       extends GenericPresenter<MVP.RequiredPresenterOps,
-                                MVP.ProvidedModelOps,
-                                ImageDownloadsModel>
-       implements MVP.ProvidedPresenterOps,
-                  MVP.RequiredPresenterOps {
+public class ImagePresenter
+        extends GenericPresenter<MVP.RequiredPresenterOps, MVP.ProvidedModelOps, ImageDownloadsModel>
+        implements MVP.ProvidedPresenterOps, MVP.RequiredPresenterOps {
     /**
      * Used to enable garbage collection.
      */
     private WeakReference<MVP.RequiredViewOps> mView;
-    	
+
     /**
      * Stores the running total number of images downloaded that must
      * be handled by ServiceResultHandler.
      */
     private int mNumImagesToHandle;
-    
+
     /**
      * Stores the running total number of images that have been
      * handled by the ServiceResultHandler.
      */
     private int mNumImagesHandled;
-    
+
     /**
      * Stores the directory to be used for all downloaded images.
      */
     private Uri mDirectoryPathname = null;
-    
+
     /**
      * Array of Strings that represent the valid URLs that have
      * been entered.
@@ -68,9 +66,8 @@ public class ImagePresenter
      * created.  One time initialization code goes here, e.g., storing
      * a WeakReference to the View layer and initializing the Model
      * layer.
-     * 
-     * @param view
-     *            A reference to the View layer.
+     *
+     * @param view A reference to the View layer.
      */
     @Override
     public void onCreate(MVP.RequiredViewOps view) {
@@ -78,18 +75,12 @@ public class ImagePresenter
         mView = new WeakReference<>(view);
 
         // Create a timestamp that will be unique.
-        final String timestamp =
-            new SimpleDateFormat("yyyyMMdd'_'HHmm").format(new Date());
+        final String timestamp = new SimpleDateFormat("yyyyMMdd'_'HHmm").format(new Date());
 
         // Use the timestamp to create a pathname for the
         // directory that stores downloaded images.
-        mDirectoryPathname = 
-            Uri.parse(Environment.getExternalStoragePublicDirectory
-                      (Environment.DIRECTORY_DCIM)
-                      + "/" 
-                      + timestamp 
-                      + "/");
-        
+        mDirectoryPathname = Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/" + timestamp + "/");
+
         // Initialize the list of URLs.
         mUrlList = new ArrayList<Uri>();
 
@@ -100,8 +91,7 @@ public class ImagePresenter
         // passing in the ImageDownloadsModel class to instantiate/manage and
         // "this" to provide ImageDownloadsModel with this MVP.RequiredModelOps
         // instance.
-        super.onCreate(ImageDownloadsModel.class,
-                       this);
+        super.onCreate(ImageDownloadsModel.class, this);
     }
 
     /**
@@ -109,7 +99,7 @@ public class ImagePresenter
      * initialize the ImagePresenter object after a runtime
      * configuration change.
      *
-     * @param view         The currently active ImagePresenter.View.
+     * @param view The currently active ImagePresenter.View.
      */
     @Override
     public void onConfigurationChange(MVP.RequiredViewOps view) {
@@ -121,14 +111,12 @@ public class ImagePresenter
         if (allDownloadsComplete()) {
             // Hide the progress bar.
             mView.get().dismissProgressBar();
-            Log.d(TAG,
-                  "All images have finished downloading");
+            Log.d(TAG, "All images have finished downloading");
         } else if (downloadsInProgress()) {
             // Display the progress bar.
             mView.get().displayProgressBar();
 
-            Log.d(TAG,
-                  "Not all images have finished downloading");
+            Log.d(TAG, "Not all images have finished downloading");
         }
 
         // (Re)display the URLs.
@@ -138,8 +126,7 @@ public class ImagePresenter
     /**
      * Hook method called to shutdown the Presenter layer.
      *
-     * @param isChangeConfigurations
-     *        True if a runtime configuration triggered the onDestroy() call.
+     * @param isChangeConfigurations True if a runtime configuration triggered the onDestroy() call.
      */
     @Override
     public void onDestroy(boolean isChangingConfigurations) {
@@ -166,19 +153,18 @@ public class ImagePresenter
 
         // Clear the URL list.
         mUrlList.clear();
-        
+
         // Redisplay the URLs, which should now be empty.
         mView.get().displayUrls();
     }
-        
+
     /**
-     * Perform the download and filter processing.  
+     * Perform the download and filter processing.
      */
     @Override
     public void startProcessing() {
         if (mUrlList.isEmpty())
-            Utils.showToast(mView.get().getActivityContext(),
-                            "no images provided");
+            Utils.showToast(mView.get().getActivityContext(), "no images provided");
         else {
             // Make the progress bar visible.
             mView.get().displayProgressBar();
@@ -205,8 +191,7 @@ public class ImagePresenter
      * when they are all returned from the Model.
      */
     @Override
-    public void onProcessingComplete(Uri url,
-                                     Uri pathToImageFile) {
+    public void onProcessingComplete(Uri url, Uri pathToImageFile) {
         // Increment the number of images handled regardless of
         // whether this result succeeded or failed to download and
         // image.
@@ -214,15 +199,11 @@ public class ImagePresenter
 
         if (pathToImageFile == null)
             // Handle a failed download.
-            mView.get().reportDownloadFailure
-                (url,
-                 allDownloadsComplete());
+            mView.get().reportDownloadFailure(url, allDownloadsComplete());
         else /* replyMessage.getResultCode() == Activity.RESULT_OK) */
             // Handle a successful download.
-            Log.d(TAG,
-                  "received image at URI "
-                  + pathToImageFile.toString());
-                
+            Log.d(TAG, "received image at URI " + pathToImageFile.toString());
+
         // Try to display all images received successfully.
         tryToDisplayImages();
     }
@@ -246,21 +227,18 @@ public class ImagePresenter
             // Note that if the directory is empty, File.listFiles()
             // returns null.
             File file = new File(mDirectoryPathname.toString());
-            if (file.isDirectory() 
-                && file.listFiles() != null 
-                && file.listFiles().length > 0) {
+            if (file.isDirectory() && file.listFiles() != null && file.listFiles().length > 0) {
                 // Display the results.
                 mView.get().displayResults(mDirectoryPathname);
             }
         }
-    }  
+    }
 
     /**
      * Returns true if all the downloads have completed, else false.
      */
     private boolean allDownloadsComplete() {
-        return mNumImagesHandled == mNumImagesToHandle
-            && mNumImagesHandled > 0;
+        return mNumImagesHandled == mNumImagesToHandle && mNumImagesHandled > 0;
     }
 
     /**
@@ -276,15 +254,11 @@ public class ImagePresenter
     @Override
     public void deleteDownloadedImages() {
         // Delete all the downloaded image.
-        int fileCount = deleteFiles(mDirectoryPathname, 
-                                    0);
+        int fileCount = deleteFiles(mDirectoryPathname, 0);
 
         // Indicate how many files were deleted.
         Utils.showToast(mView.get().getActivityContext(),
-                        fileCount
-                        + " downloaded image"
-                        + (fileCount == 1 ? " was" : "s were")
-                        + " deleted.");
+                fileCount + " downloaded image" + (fileCount == 1 ? " was" : "s were") + " deleted.");
 
         // Reset the fields for the next run.
         resetFields();
@@ -294,28 +268,20 @@ public class ImagePresenter
      * A helper method that recursively deletes files in a specified
      * directory.
      */
-    private Integer deleteFiles(Uri directoryPathname,
-                                int fileCount) {
-        File imageDirectory =
-            new File(directoryPathname.toString());        
+    private Integer deleteFiles(Uri directoryPathname, int fileCount) {
+        File imageDirectory = new File(directoryPathname.toString());
         File files[] = imageDirectory.listFiles();
 
-        if (files == null) 
-            return fileCount;
+        if (files == null) return fileCount;
 
         // Android does not allow you to delete a directory with child
         // files, so we need to write code that handles this
         // recursively.
-        for (final File f : files) {  
+        for (final File f : files) {
             final Uri fileOrDirectoryName = Uri.parse(f.toString());
-            if (f.isDirectory()) 
-                fileCount += deleteFiles(fileOrDirectoryName, 
-                                         fileCount);
+            if (f.isDirectory()) fileCount += deleteFiles(fileOrDirectoryName, fileCount);
             Log.d(TAG,
-                  "deleting file "
-                  + fileOrDirectoryName.toString()
-                  + " with count "
-                  + fileCount);
+                    "deleting file " + fileOrDirectoryName.toString() + " with count " + fileCount);
             ++fileCount;
             f.delete();
         }
@@ -331,7 +297,7 @@ public class ImagePresenter
     public Context getActivityContext() {
         return mView.get().getActivityContext();
     }
-    
+
     /**
      * Return the Application context.
      */

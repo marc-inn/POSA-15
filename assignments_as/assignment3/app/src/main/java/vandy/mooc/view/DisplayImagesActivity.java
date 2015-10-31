@@ -1,10 +1,5 @@
 package vandy.mooc.view;
 
-import java.io.File;
-
-import vandy.mooc.R;
-import vandy.mooc.common.LifecycleLoggingActivity;
-import vandy.mooc.utils.loader.ImageLoader;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -18,33 +13,33 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import java.io.File;
+
+import vandy.mooc.R;
+import vandy.mooc.common.LifecycleLoggingActivity;
+import vandy.mooc.utils.loader.ImageLoader;
+
 /**
  * An Activity that displays all the images that have been downloaded
  * and processed.
  */
-public class DisplayImagesActivity
-       extends LifecycleLoggingActivity {
+public class DisplayImagesActivity extends LifecycleLoggingActivity {
     /**
      * Name of the Intent Action that wills start this Activity.
      */
-    public static String ACTION_DISPLAY_IMAGES =
-        "android.intent.action.DISPLAY_IMAGES";
-
-    /**
-     * The column width to use for the GridView.
-     */
-    private int mColWidth;
-
-    /**
-     * The number of columns to use in the GridView.
-     */
-    private int mNumCols;
-
+    public static String ACTION_DISPLAY_IMAGES = "android.intent.action.DISPLAY_IMAGES";
     /**
      * A reasonable column width.
      */
     private final int COL_WIDTH = 300;
-
+    /**
+     * The column width to use for the GridView.
+     */
+    private int mColWidth;
+    /**
+     * The number of columns to use in the GridView.
+     */
+    private int mNumCols;
     /**
      * The adapter responsible for loading the results into the GridView.
      */
@@ -54,11 +49,19 @@ public class DisplayImagesActivity
      * The file path in external storage storing images to display
      */
     private String mFilePath;
-    
+
     /**
      * ImageLoader used to load images in the background
      */
     private ImageLoader mLoader;
+
+    /**
+     * Factory method that returns an implicit Intent for displaying
+     * images.
+     */
+    public static Intent makeIntent(Uri directoryPathname) {
+        return new Intent(ACTION_DISPLAY_IMAGES).setDataAndType(directoryPathname, "image/*");
+    }
 
     /**
      * Creates the activity and generates a button for each filter
@@ -76,11 +79,9 @@ public class DisplayImagesActivity
         GridView imageGrid = (GridView) findViewById(R.id.imageGrid);
         imageGrid.setAdapter(imageAdapter);
         configureGridView(imageGrid);
-        
+
         // Initialize the image loader
-        mLoader = new ImageLoader(getResources()
-                                    .getDrawable
-                                       (R.drawable.loading));
+        mLoader = new ImageLoader(getResources().getDrawable(R.drawable.loading));
 
         // Retrieve the file path to the directory containing the
         // images to display from the intent.
@@ -89,16 +90,6 @@ public class DisplayImagesActivity
         // Find the directory and load the directory as the source of
         // the imageAdapter.
         imageAdapter.setBitmaps(mFilePath);
-    }
-
-    /**
-     * Factory method that returns an implicit Intent for displaying
-     * images.
-     */
-    public static Intent makeIntent(Uri directoryPathname) {
-        return new Intent(ACTION_DISPLAY_IMAGES)
-            .setDataAndType(directoryPathname,
-                            "image/*");
     }
 
     /**
@@ -124,13 +115,12 @@ public class DisplayImagesActivity
 
     /**
      * @class ImageAdapter
-     *
      * @brief The Adapter that loads the Images into the Layout's GridView.
      */
     public class ImageAdapter extends BaseAdapter {
-    	/**
-    	 * File path of the directory holding the images to display
-    	 */
+        /**
+         * File path of the directory holding the images to display
+         */
         private String mFilePath = null;
 
         /**
@@ -147,15 +137,19 @@ public class DisplayImagesActivity
          * The image files being displayed
          */
         private File[] mBitmapFiles;
-        
+        /**
+         * Maximum width of a column.
+         */
+        private int mColWidth = 100;
+
         /**
          * Creates the ImageAdapter in the given context.
          */
         public ImageAdapter(Context c) {
             mContext = c;
-            mBitmapFiles = new File[] {};
+            mBitmapFiles = new File[]{};
         }
-        
+
         /**
          * Returns the count of bitmaps in the list.
          */
@@ -186,55 +180,40 @@ public class DisplayImagesActivity
          * GridView appropriately.
          */
         @Override
-        public View getView(final int position,
-                            View convertView,
-                            ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             ImageView imageView;
             if (convertView == null) {
                 imageView = new ImageView(mContext);
 
                 // Set configuration properties of the ImageView
-                imageView.setLayoutParams(new GridView.LayoutParams(mColWidth,
-                                                                    mColWidth));
+                imageView.setLayoutParams(new GridView.LayoutParams(mColWidth, mColWidth));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageView.setPadding(mPadding,
-                                     mPadding,
-                                     mPadding,
-                                     mPadding);
+                imageView.setPadding(mPadding, mPadding, mPadding, mPadding);
 
                 // Implement onClick to start an a SwipeListDisplay at
                 // the current image.
                 imageView.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startActivity(ViewPagerActivity.makeIntent
-                                          (mFilePath,
-                                           position));
-                        }
-                    });
-            } else 
-                imageView = (ImageView) convertView;
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(ViewPagerActivity.makeIntent(mFilePath, position));
+                    }
+                });
+            } else imageView = (ImageView) convertView;
 
             // Load the image in the background
-            mLoader.loadAndDisplayImage(imageView, 
-                                        mBitmapFiles[position]
-                                            .getAbsolutePath(), 
-                                        mColWidth);
+            mLoader.loadAndDisplayImage(imageView,
+                    mBitmapFiles[position].getAbsolutePath(),
+                    mColWidth);
             return imageView;
         }
-
-        /**
-         * Maximum width of a column.
-         */
-        private int mColWidth = 100;
 
         /**
          * Set the maximum width of a column.
          */
         public void setColWidth(int w) {
-            if (w > 0)
-                mColWidth = w;
+            if (w > 0) mColWidth = w;
         }
+
         /**
          * Resets the bitmaps of the GridView to the ones found at the
          * given filterPath.

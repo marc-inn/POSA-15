@@ -11,7 +11,7 @@ public interface ContextView {
      * Get the Activity Context.
      */
     Context getActivityContext();
-    
+
     /**
      * Get the Application Context.
      */

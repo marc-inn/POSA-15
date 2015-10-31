@@ -1,14 +1,5 @@
 package vandy.mooc.common;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InterruptedIOException;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -23,30 +14,40 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.Locale;
+
 /**
  * @class Utils
- *
  * @brief Helper methods shared by various Activities.
  */
 public class Utils {
     /**
      * Debugging tag.
      */
-    private static final String TAG =
-        Utils.class.getCanonicalName();
+    private static final String TAG = Utils.class.getCanonicalName();
+
+    /**
+     * Ensure this class is only used as a utility.
+     */
+    private Utils() {
+        throw new AssertionError();
+    }
 
     /**
      * Return an uppercase version of the input or null if user gave
      * no input.  If user gave no input and @a showToast is true a
      * toast is displayed to this effect.
      */
-    public static String uppercaseInput(Context context, 
-                                        String input,
-                                        boolean showToast) {
+    public static String uppercaseInput(Context context, String input, boolean showToast) {
         if (input.isEmpty()) {
-            if (showToast)
-                Utils.showToast(context,
-                                "no input provided");
+            if (showToast) Utils.showToast(context, "no input provided");
             return null;
         } else
             // Convert the input entered by the user so it's in
@@ -57,37 +58,28 @@ public class Utils {
     /**
      * Show a toast message.
      */
-    public static void showToast(Context context,
-                                 String message) {
-        Toast.makeText(context,
-                       message,
-                       Toast.LENGTH_SHORT).show();
+    public static void showToast(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     /**
      * This method is used to hide a keyboard after a user has
      * finished typing the url.
      */
-    public static void hideKeyboard(Activity activity,
-                                    IBinder windowToken) {
-        InputMethodManager mgr =
-            (InputMethodManager) activity.getSystemService
-            (Context.INPUT_METHOD_SERVICE);
+    public static void hideKeyboard(Activity activity, IBinder windowToken) {
+        InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(windowToken, 0);
     }
-        
+
     /**
      * Set the result of the Activity to indicate whether the
      * operation on the content succeeded or not.
-     * 
-     * @param activity
-     *          The Activity whose result is being set.
-     * @param pathToContent
-     *          The pathname to the content file.
-     * @param failureReason
-     *          String to add to add as an extra to the Intent passed
-     *          back to the originating Activity if the @a
-     *          pathToContent is null.
+     *
+     * @param activity      The Activity whose result is being set.
+     * @param pathToContent The pathname to the content file.
+     * @param failureReason String to add to add as an extra to the Intent passed
+     *                      back to the originating Activity if the @a
+     *                      pathToContent is null.
      */
     public static void setActivityResult(Activity activity,
                                          Uri pathToContent,
@@ -95,42 +87,32 @@ public class Utils {
         if (pathToContent == null)
             // Indicate why the operation on the content was
             // unsuccessful or was cancelled.
-            activity.setResult
-                (Activity.RESULT_CANCELED,
-                 new Intent("").putExtra("reason",
-                                         failureReason));
+            activity.setResult(Activity.RESULT_CANCELED,
+                    new Intent("").putExtra("reason", failureReason));
         else
             // Set the result of the Activity to designate the path to
             // the content file resulting from a successful operation.
-            activity.setResult(Activity.RESULT_OK,
-                               new Intent("",
-                                          pathToContent));
+            activity.setResult(Activity.RESULT_OK, new Intent("", pathToContent));
     }
 
     /**
      * Set the result of the Activity to indicate whether the
      * operation on the content succeeded or not.
-     * 
-     * @param activity
-     *          The Activity whose result is being set.
-     * @param resultCode
-     *          The result of the Activity, i.e., RESULT_CANCELED or
-     *          RESULT_OK. 
-     * @param failureReason
-     *          String to add to add as an extra to the Intent passed
-     *          back to the originating Activity if the result of the
-     *          Activity is RESULT_CANCELED. 
+     *
+     * @param activity      The Activity whose result is being set.
+     * @param resultCode    The result of the Activity, i.e., RESULT_CANCELED or
+     *                      RESULT_OK.
+     * @param failureReason String to add to add as an extra to the Intent passed
+     *                      back to the originating Activity if the result of the
+     *                      Activity is RESULT_CANCELED.
      */
-    public static void setActivityResult(Activity activity,
-                                         int resultCode,
-                                         String failureReason) {
+    public static void setActivityResult(Activity activity, int resultCode, String failureReason) {
         if (resultCode == Activity.RESULT_CANCELED)
             // Indicate why the operation on the content was
             // unsuccessful or was cancelled.
             activity.setResult(Activity.RESULT_CANCELED,
-                 new Intent("").putExtra("reason",
-                                         failureReason));
-        else 
+                    new Intent("").putExtra("reason", failureReason));
+        else
             // Everything is ok.
             activity.setResult(Activity.RESULT_OK);
     }
@@ -146,30 +128,23 @@ public class Utils {
     /**
      * Copy the contents of the @a inputStream to the @a outputStream
      * in a manner that can be interrupted properly.
-     * 
-     * @return true if copy completed without being interrupted, else false
      *
+     * @return true if copy completed without being interrupted, else false
      * @throws IOException
      */
-    public static boolean interruptibleCopy(InputStream inputStream,
-                                             OutputStream outputStream)
-        throws IOException {
+    public static boolean interruptibleCopy(InputStream inputStream, OutputStream outputStream)
+            throws IOException {
         final byte[] buffer = new byte[1024];
 
         try {
             // Keep looping until the input stream is finished or the
             // thread is interrupted.
-            for (int n; 
-                 (n = inputStream.read(buffer)) >= 0;
-                 ) {
-                if (Thread.interrupted())
-                    return false;
+            for (int n; (n = inputStream.read(buffer)) >= 0; ) {
+                if (Thread.interrupted()) return false;
 
                 // Write the bytes to the output stream.
-                outputStream.write(buffer,
-                                   0,
-                                   n);
-    
+                outputStream.write(buffer, 0, n);
+
             }
         } finally {
             // Flush the contents of the output stream.
@@ -181,33 +156,27 @@ public class Utils {
     /**
      * Download an image file from the URL provided by the user and
      * decode into a Bitmap.
-     * 
-     * @param url
-     *            The url where a bitmap image is located
      *
+     * @param url The url where a bitmap image is located
      * @return the image bitmap or null if there was an error
      */
     public static Bitmap downloadAndDecodeImage(String url) {
         try {
             // Check to see if this thread has been interrupted.
-            if (Thread.interrupted())
-                return null;
+            if (Thread.interrupted()) return null;
 
             // Connect to a remote server, download the contents of
             // the image, and provide access to it via an Input
             // Stream.
-            InputStream is =
-                (InputStream) new URL(url).getContent();
+            InputStream is = (InputStream) new URL(url).getContent();
 
             // Check to see if this thread has been interrupted.
-            if (Thread.interrupted())
-                return null;
+            if (Thread.interrupted()) return null;
             else
                 // Decode an InputStream into a Bitmap.
                 return BitmapFactory.decodeStream(is);
         } catch (Exception e) {
-            Log.e(TAG,
-                  "Error downloading image");
+            Log.e(TAG, "Error downloading image");
             e.printStackTrace();
             return null;
         }
@@ -219,27 +188,19 @@ public class Utils {
      */
     public static File openDirectory(Uri directoryPathname) {
         File d = new File(directoryPathname.toString());
-        if (!d.exists()
-            && !d.mkdir())
-            return null;
-        else
-            return d;
+        if (!d.exists() && !d.mkdir()) return null;
+        else return d;
     }
 
     /**
      * Download store a song into a file on the device.
      *
-     * @param context
-     *            The context in which to write the file.
-     * @param url
-     *            URL to the resource (e.g., local or remote file).
-     * @param fileName
-     *            Name of the file.
-     * @param directoryPathname
-     *            Pathname of the directory to write the file.
-     * 
+     * @param context           The context in which to write the file.
+     * @param url               URL to the resource (e.g., local or remote file).
+     * @param fileName          Name of the file.
+     * @param directoryPathname Pathname of the directory to write the file.
      * @return Absolute path to the downloaded song file on the file
-     *         system.
+     * system.
      */
     public static Uri createDirectoryAndSaveFile(Context context,
                                                  URL url,
@@ -247,42 +208,32 @@ public class Utils {
                                                  Uri directoryPathname) {
         try {
             // Bail out of we get an invalid bitmap.
-            if (url == null 
-                || fileName == null) 
-                return null;
+            if (url == null || fileName == null) return null;
 
             // Create a directory path.
-            File directoryPath =
-                new File(directoryPathname.toString());
+            File directoryPath = new File(directoryPathname.toString());
 
             // If the directory doesn't exist already then create it.
-            if (!directoryPath.exists())
-                directoryPath.mkdirs();
+            if (!directoryPath.exists()) directoryPath.mkdirs();
 
             // Create a filePath within the directoryPath.
-            File file =
-                new File(directoryPath,
-                         getUniqueFilename(fileName));
+            File file = new File(directoryPath, getUniqueFilename(fileName));
 
             // Delete the file if it already exists.
-            if (file.exists())
-                file.delete();
+            if (file.exists()) file.delete();
 
             // Get the content of the resource at the url and save it
             // to an output file.
             try (InputStream is = (InputStream) url.getContent();
                  OutputStream os = new FileOutputStream(file)) {
                 // Copy input to output.
-                interruptibleCopy(is,
-                                  os);
+                interruptibleCopy(is, os);
 
                 // Set the modified date to enable cancellation.
                 file.setLastModified(System.currentTimeMillis());
-            } 
-            catch (InterruptedIOException iioe)
-			{
-            	iioe.printStackTrace();
-			}
+            } catch (InterruptedIOException iioe) {
+                iioe.printStackTrace();
+            }
 
             // Get the absolute path of the song.
             String absolutePathTosong = file.getAbsolutePath();
@@ -296,38 +247,27 @@ public class Utils {
 
     /**
      * This method checks if we can write song to external storage.
-     * 
+     *
      * @return true if an song can be written, and false otherwise
      */
     public static boolean isExternalStorageWritable() {
-        return Environment.MEDIA_MOUNTED.equals
-            (Environment.getExternalStorageState());
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
     /**
      * Create a filename that contains a timestamp which makes it
      * unique.
-     * 
-     * @param filename
-     *            The name of a file that we'd like to make unique.
+     *
+     * @param filename The name of a file that we'd like to make unique.
      * @return String containing the unique temporary filename.
      */
     public static String getUniqueFilename(final Uri filename) {
-        return Base64.encodeToString((filename.toString()
-                                      + System.currentTimeMillis() 
-                                      + Thread.currentThread().getName()).getBytes(),
-                                     Base64.NO_WRAP);
+        return Base64.encodeToString((filename.toString() + System.currentTimeMillis() + Thread.currentThread()
+                .getName()).getBytes(), Base64.NO_WRAP);
         // Use this implementation if you don't want to keep filling
         // up your file system with temp files..
         //
         // return Base64.encodeToString(filename.getBytes(),
         // Base64.NO_WRAP);
     }
-
-    /**
-     * Ensure this class is only used as a utility.
-     */
-    private Utils() {
-        throw new AssertionError();
-    } 
 }

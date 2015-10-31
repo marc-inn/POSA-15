@@ -1,8 +1,8 @@
 package vandy.mooc.utils.loader;
 
-import java.lang.ref.WeakReference;
-
 import android.widget.ImageView;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Container that holds an image view in a weak reference.
@@ -28,7 +28,7 @@ public class ImageViewHolder {
     public ImageView getWrappedImageView() {
         return mImgView.get();
     }
-    
+
     /**
      * Returns true if the wrapped ImageView has been garbage
      * collected, false otherwise.

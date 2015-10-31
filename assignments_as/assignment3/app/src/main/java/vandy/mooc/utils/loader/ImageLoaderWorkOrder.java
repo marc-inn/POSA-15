@@ -2,32 +2,32 @@ package vandy.mooc.utils.loader;
 
 
 /**
- * POJO that stores the information for a single 
+ * POJO that stores the information for a single
  * ImageLoaderTask's processing
  */
 public class ImageLoaderWorkOrder {
-    
+
     /**
-     * ImageViewHolder wrapping the ImageView that 
+     * ImageViewHolder wrapping the ImageView that
      * will display the image
      */
     private ImageViewHolder mImageViewHolder;
-    
+
     /**
      * The filepath of the image to load
      */
     private String mFilePath;
-    
+
     /**
      * The target width
      */
     private int mTargetWidth;
-    
+
     /**
      * The target height
      */
     private int mTargetHeight;
-    
+
     /**
      * Constructor initializes fields
      */
@@ -44,7 +44,7 @@ public class ImageLoaderWorkOrder {
     /*
      * Getters and setters
      */
-    
+
     public ImageViewHolder getmImageViewHolder() {
         return mImageViewHolder;
     }

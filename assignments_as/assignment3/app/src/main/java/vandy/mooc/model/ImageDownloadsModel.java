@@ -1,10 +1,11 @@
 package vandy.mooc.model;
 
+import android.content.Context;
+import android.net.Uri;
+
 import java.lang.ref.WeakReference;
 
 import vandy.mooc.MVP;
-import android.content.Context;
-import android.net.Uri;
 
 /**
  * This class plays the "Model" role in the Model-View-Presenter (MVP)
@@ -13,13 +14,11 @@ import android.net.Uri;
  * It implements the MVP.ProvidedModelOps so it can be created/managed
  * by the GenericPresenter framework.
  */
-public class ImageDownloadsModel 
-       implements MVP.ProvidedModelOps {
+public class ImageDownloadsModel implements MVP.ProvidedModelOps {
     /**
      * Debugging tag used by the Android logger.
      */
-    protected final static String TAG = 
-        ImageDownloadsModel.class.getSimpleName();
+    protected final static String TAG = ImageDownloadsModel.class.getSimpleName();
 
     /**
      * A WeakReference used to access methods in the Presenter layer.
@@ -32,22 +31,19 @@ public class ImageDownloadsModel
      * created.  One time initialization code goes here, e.g., storing
      * a WeakReference to the Presenter and initializing the sync and
      * async Services.
-     * 
-     * @param presenter
-     *            A reference to the Presenter layer.
+     *
+     * @param presenter A reference to the Presenter layer.
      */
     @Override
     public void onCreate(MVP.RequiredPresenterOps presenter) {
         // Set the WeakReference.
-        mPresenter =
-            new WeakReference<>(presenter);
+        mPresenter = new WeakReference<>(presenter);
     }
 
     /**
      * Hook method called to shutdown the Model layer.
      *
-     * @param isChangeConfigurations
-     *        True if a runtime configuration triggered the onDestroy() call.
+     * @param isChangeConfigurations True if a runtime configuration triggered the onDestroy() call.
      */
     @Override
     public void onDestroy(boolean isChangingConfigurations) {
@@ -60,21 +56,14 @@ public class ImageDownloadsModel
      * FileOutputStream, and return the path to the image file on
      * disk.
      *
-     * @param context
-     *          The context in which to write the file.
-     * @param url 
-     *          The URL of the image to download.
-     * @param directoryPathname 
-     *          Pathname of the directory to write the file.
-     * 
-     * @return 
-     *        Absolute path to the downloaded image file on the file
-     *        system.
+     * @param context           The context in which to write the file.
+     * @param url               The URL of the image to download.
+     * @param directoryPathname Pathname of the directory to write the file.
+     * @return Absolute path to the downloaded image file on the file
+     * system.
      */
-    public Uri downloadImage(Context context,
-                             Uri url,
-                             Uri directoryPathname) {
+    public Uri downloadImage(Context context, Uri url, Uri directoryPathname) {
         // @@ TODO -- You fill in here, replacing "null" with the appropriate code.
-    	return null;
+        return null;
     }
 }

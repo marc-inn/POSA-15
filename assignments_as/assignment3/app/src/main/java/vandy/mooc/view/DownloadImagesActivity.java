@@ -1,10 +1,5 @@
 package vandy.mooc.view;
 
-import vandy.mooc.MVP;
-import vandy.mooc.R;
-import vandy.mooc.common.GenericActivity;
-import vandy.mooc.common.Utils;
-import vandy.mooc.presenter.ImagePresenter;
 import android.app.ActionBar.LayoutParams;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import vandy.mooc.MVP;
+import vandy.mooc.R;
+import vandy.mooc.common.GenericActivity;
+import vandy.mooc.common.Utils;
+import vandy.mooc.presenter.ImagePresenter;
+
 /**
  * This Activity prompts the user for URLs of images to download
  * concurrently via the ImagePresenter and view via the
@@ -30,11 +31,9 @@ import android.widget.TextView;
  * used to minimize dependencies between the View and Presenter
  * layers.
  */
-public class DownloadImagesActivity 
-       extends GenericActivity<MVP.RequiredViewOps,
-                               MVP.ProvidedPresenterOps,
-                               ImagePresenter>
-       implements MVP.RequiredViewOps {
+public class DownloadImagesActivity
+        extends GenericActivity<MVP.RequiredViewOps, MVP.ProvidedPresenterOps, ImagePresenter>
+        implements MVP.RequiredViewOps {
     /**
      * EditText field for entering the desired URL to an image.
      */
@@ -49,7 +48,7 @@ public class DownloadImagesActivity
      * Display progress to the user.
      */
     protected ProgressBar mLoadingProgressBar;
-    
+
     /**
      * Menu on main screen
      */
@@ -60,8 +59,7 @@ public class DownloadImagesActivity
      * One time initialization code goes here, e.g., UI layout
      * initialization and initializing the GenericActivity framework.
      *
-     * @param savedInstanceState
-     *            Object that contains saved state information.
+     * @param savedInstanceState Object that contains saved state information.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +76,7 @@ public class DownloadImagesActivity
         // passing in the ImagePresenter class to instantiate/manage
         // and "this" to provide ImagePresenter with the
         // MVP.RequiredViewOps instance.
-        super.onCreate(ImagePresenter.class,
-                       this);
+        super.onCreate(ImagePresenter.class, this);
     }
 
     /**
@@ -102,17 +99,14 @@ public class DownloadImagesActivity
      */
     private void initializeViewFields() {
         // Store the ProgressBar in a field for fast access.
-        mLoadingProgressBar =
-            (ProgressBar) findViewById(R.id.progressBar_loading);
-            
+        mLoadingProgressBar = (ProgressBar) findViewById(R.id.progressBar_loading);
+
         // Store the EditText that holds the urls entered by the user
         // (if any).
-        mUrlEditText =
-            (EditText) findViewById(R.id.url);
+        mUrlEditText = (EditText) findViewById(R.id.url);
 
         // Store the linear layout displaying URLs entered.
-        mLinearLayout =
-            (LinearLayout) findViewById(R.id.linearLayout);
+        mLinearLayout = (LinearLayout) findViewById(R.id.linearLayout);
     }
 
     /**
@@ -131,8 +125,7 @@ public class DownloadImagesActivity
      */
     public void addUrl(View view) {
         // Get the user input (if any).
-        final String url =
-            mUrlEditText.getText().toString();
+        final String url = mUrlEditText.getText().toString();
 
         // Do sanity check for syntactic validity of the URL.
         if (URLUtil.isValidUrl(url)) {
@@ -141,10 +134,7 @@ public class DownloadImagesActivity
 
             // (Re)display all the URLs.
             displayUrls();
-    	} else 
-            Utils.showToast(this,
-                            "Invalid URL "
-                            + url);
+        } else Utils.showToast(this, "Invalid URL " + url);
     }
 
     /**
@@ -154,7 +144,7 @@ public class DownloadImagesActivity
     public void deleteDownloadedImages(View view) {
         getPresenter().deleteDownloadedImages();
     }
-	
+
     /**
      * Make the ProgressBar visible.
      */
@@ -175,16 +165,11 @@ public class DownloadImagesActivity
      * Handle failure to download an image.
      */
     @Override
-    public void reportDownloadFailure(Uri url,
-                                      boolean downloadsComplete) {
-        Utils.showToast(this,
-                        "image at " 
-                        + url.toString()
-                        + " failed to download!");
+    public void reportDownloadFailure(Uri url, boolean downloadsComplete) {
+        Utils.showToast(this, "image at " + url.toString() + " failed to download!");
 
         // Remove the URL that failed from the UI.
-        removeUrl(url,
-                  downloadsComplete);
+        removeUrl(url, downloadsComplete);
 
         if (downloadsComplete)
             // Dismiss the progress bar.
@@ -194,24 +179,20 @@ public class DownloadImagesActivity
     /**
      * Remove a URL that couldn't be downloaded.
      */
-    private void removeUrl(Uri url,
-                           boolean downloadsComplete) {
+    private void removeUrl(Uri url, boolean downloadsComplete) {
         // Check if passed URL is in the list of URLs.
         if (getPresenter().getUrlList().contains(url)) {
             // Remove the invalid URL from the list.
             getPresenter().getUrlList().remove(url);
         } else {
             // Warn caller that URL was not in the list.
-            Log.w(TAG, 
-                  "RemoveUrl() - passed URL ("
-                  + (url == null ? "null" : url.toString())
-                  + ") is not in URL list.");
+            Log.w(TAG,
+                    "RemoveUrl() - passed URL (" + (url == null ? "null" : url.toString()) + ") is not in URL list.");
         }
 
         // If there are no more downloads pending dismiss the progress
         // bar.
-        if (downloadsComplete)
-            mLoadingProgressBar.setVisibility(View.INVISIBLE);
+        if (downloadsComplete) mLoadingProgressBar.setVisibility(View.INVISIBLE);
 
         // (Re)display the URLs provided by the user thus far.
         displayUrls();
@@ -227,11 +208,10 @@ public class DownloadImagesActivity
 
         // Add a each URL list entry as a text view child of the
         // parent LinearLayout.
-        for (Uri url: getPresenter().getUrlList()) {
+        for (Uri url : getPresenter().getUrlList()) {
             TextView urlTextView = new TextView(this);
-            urlTextView.setLayoutParams
-                (new LayoutParams(LayoutParams.WRAP_CONTENT,
-                                  LayoutParams.WRAP_CONTENT));
+            urlTextView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT));
             urlTextView.setText(url.toString());
             mLinearLayout.addView(urlTextView);
         }
@@ -247,16 +227,12 @@ public class DownloadImagesActivity
     @Override
     public void displayResults(Uri directoryPathname) {
         // Create an Activity for displaying the images.
-        final Intent intent =
-            DisplayImagesActivity.makeIntent
-            (directoryPathname);
+        final Intent intent = DisplayImagesActivity.makeIntent(directoryPathname);
 
-        Log.d(TAG,
-              "starting DisplayImageActivity at "
-              + directoryPathname.toString());
+        Log.d(TAG, "starting DisplayImageActivity at " + directoryPathname.toString());
 
         // Verify that the intent will resolve to an Activity.
-        if (intent.resolveActivity(getPackageManager()) != null) 
+        if (intent.resolveActivity(getPackageManager()) != null)
             // Launch Activity to display the results.
             startActivity(intent);
     }
