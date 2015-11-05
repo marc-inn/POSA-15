@@ -1,4 +1,4 @@
-package vandy.mooc.common;
+package vandy.mooc.common.util;
 
 import android.content.Context;
 import android.net.Uri;
@@ -84,14 +84,13 @@ public class DownloadUtils {
                 // temporary file.
                 try (InputStream is = context.getResources().openRawResource(OFFLINE_TEST_IMAGE);
                      OutputStream os = new FileOutputStream(filePath)) {
-                    Utils.interruptibleCopy(is, os);
+                    Utils.incorruptibleCopy(is, os);
                 } catch (Exception e) {
                     return null; // Indicate a failure.
                 }
 
                 // Create an output file and save the image into it.
-                return Utils.createDirectoryAndSaveFile(context,
-                        new URL(Uri.fromFile(filePath).toString()),
+                return Utils.createDirectoryAndSaveFile(new URL(Uri.fromFile(filePath).toString()),
                         Uri.parse(OFFLINE_FILENAME),
                         directoryPathname);
             }
@@ -99,72 +98,12 @@ public class DownloadUtils {
             else {
                 // Create an output file and save the image referenced
                 // at the URL into it.
-                return Utils.createDirectoryAndSaveFile(context,
-                        new URL(url.toString()),
+                return Utils.createDirectoryAndSaveFile(new URL(url.toString()),
                         Uri.parse(url.getLastPathSegment()),
                         directoryPathname);
             }
         } catch (Exception e) {
             Log.e(TAG, "Exception while downloading -- returning null." + e.toString());
-            return null;
-        }
-    }
-
-    /**
-     * Download the song located at the provided Internet url using
-     * the URL class, store it on the android file system using a
-     * FileOutputStream, and return the path to the song file on disk.
-     *
-     * @param context           The context in which to write the file.
-     * @param url               The URL of the song to download.
-     * @param directoryPathname Pathname of the directory to write the file.
-     * @return Absolute path to the downloaded song file on the file
-     * system.
-     */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static Uri downloadSong(Context context, Uri url, Uri directoryPathname) {
-        try {
-            if (!Utils.isExternalStorageWritable()) return null;
-
-            // If we're offline, open the song in our resources.
-            if (DOWNLOAD_OFFLINE) {
-                // Create a file to a temporary file.
-                File file = new File(Utils.openDirectory(directoryPathname),
-                        Utils.getUniqueFilename(Uri.parse(OFFLINE_FILENAME)));
-
-                // Get a stream from the song resource and copy it
-                // into a temporary file.
-                try (InputStream is = context.getResources().openRawResource(OFFLINE_TEST_SONG);
-                     OutputStream os = new FileOutputStream(file)) {
-                    // Copy input to output.
-                    Utils.interruptibleCopy(is, os);
-
-                    // Set the modified date to enable cancellation.
-                    file.setLastModified(System.currentTimeMillis());
-                } catch (Exception e) {
-                    return null; // Indicate a failure.
-                }
-
-                // Create an output file and save the song into it.
-                return Utils.createDirectoryAndSaveFile(context,
-                        new URL(Uri.fromFile(file).toString()),
-                        Uri.parse(OFFLINE_FILENAME),
-                        directoryPathname);
-            }
-            // Otherwise, download the file requested by the user.
-            else {
-                // Check to see if this thread has been interrupted.
-                if (!Thread.currentThread().isInterrupted()) {
-                    // Create an output file and save the song referenced
-                    // at the URL into it.
-                    return Utils.createDirectoryAndSaveFile(context,
-                            new URL(url.toString()),
-                            Uri.parse(url.getLastPathSegment()),
-                            directoryPathname);
-                }
-                return null;
-            }
-        } catch (Exception e) {
             return null;
         }
     }

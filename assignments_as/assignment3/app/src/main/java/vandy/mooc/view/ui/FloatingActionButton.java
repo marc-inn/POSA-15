@@ -58,7 +58,8 @@ public class FloatingActionButton extends View {
      * Constructor that initializes the Floating
      * Action Button.
      *
-     * @param context
+     * @param context Context
+     * @param attrs   Attributes
      */
     public FloatingActionButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -78,7 +79,7 @@ public class FloatingActionButton extends View {
     /**
      * Sets the Color of FloatingActionButton.
      *
-     * @param color
+     * @param color Color
      */
     public void setFloatingActionButtonColor(int color) {
         this.color = color;
@@ -88,7 +89,7 @@ public class FloatingActionButton extends View {
     /**
      * Sets the Icon of FloatingActionButton.
      *
-     * @param drawable
+     * @param drawable Drawable
      */
     public void setFloatingActionButtonDrawable(Drawable drawable) {
         this.mBitmap = ((BitmapDrawable) drawable).getBitmap();
@@ -98,14 +99,14 @@ public class FloatingActionButton extends View {
     /**
      * Initialize all the Resources needed before drawing.
      *
-     * @param FloatingActionButtonColor
+     * @param color Color
      */
-    public void init(int FloatingActionButtonColor) {
+    public void init(int color) {
         setWillNotDraw(false);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         mButtonPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mButtonPaint.setColor(FloatingActionButtonColor);
+        mButtonPaint.setColor(color);
         mButtonPaint.setStyle(Paint.Style.FILL);
         mButtonPaint.setShadowLayer(10.0f, 0.0f, 3.5f, Color.argb(100, 0, 0, 0));
         mDrawablePaint = new Paint(Paint.ANTI_ALIAS_FLAG);

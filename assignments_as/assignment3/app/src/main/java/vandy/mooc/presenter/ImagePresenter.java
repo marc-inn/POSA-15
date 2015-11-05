@@ -2,6 +2,7 @@ package vandy.mooc.presenter;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
@@ -10,10 +11,11 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import vandy.mooc.MVP;
 import vandy.mooc.common.GenericPresenter;
-import vandy.mooc.common.Utils;
+import vandy.mooc.common.util.Utils;
 import vandy.mooc.model.ImageDownloadsModel;
 
 /**
@@ -26,6 +28,7 @@ import vandy.mooc.model.ImageDownloadsModel;
 public class ImagePresenter
         extends GenericPresenter<MVP.RequiredPresenterOps, MVP.ProvidedModelOps, ImageDownloadsModel>
         implements MVP.ProvidedPresenterOps, MVP.RequiredPresenterOps {
+
     /**
      * Used to enable garbage collection.
      */
@@ -75,14 +78,15 @@ public class ImagePresenter
         mView = new WeakReference<>(view);
 
         // Create a timestamp that will be unique.
-        final String timestamp = new SimpleDateFormat("yyyyMMdd'_'HHmm").format(new Date());
+        final String timestamp = new SimpleDateFormat("yyyyMMdd'_'HHmm",
+                Locale.US).format(new Date());
 
         // Use the timestamp to create a pathname for the
         // directory that stores downloaded images.
         mDirectoryPathname = Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/" + timestamp + "/");
 
         // Initialize the list of URLs.
-        mUrlList = new ArrayList<Uri>();
+        mUrlList = new ArrayList<>();
 
         // Finish the initialization steps.
         resetFields();
@@ -126,7 +130,7 @@ public class ImagePresenter
     /**
      * Hook method called to shutdown the Presenter layer.
      *
-     * @param isChangeConfigurations True if a runtime configuration triggered the onDestroy() call.
+     * @param isChangingConfigurations True if a runtime configuration triggered the onDestroy() call.
      */
     @Override
     public void onDestroy(boolean isChangingConfigurations) {
@@ -182,7 +186,11 @@ public class ImagePresenter
             // concurrently via the AsyncTask.THREAD_POOL_EXECUTOR and
             // executeOnExecutor().
 
-            // TODO -- you fill in here.
+            for (Uri url : mUrlList) {
+                ImageDownloadAsyncTask downloadAsyncTask = new ImageDownloadAsyncTask(url,
+                        mDirectoryPathname);
+                downloadAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
+            }
         }
     }
 
@@ -226,7 +234,7 @@ public class ImagePresenter
             // exists and also contains at least 1 image to display.
             // Note that if the directory is empty, File.listFiles()
             // returns null.
-            File file = new File(mDirectoryPathname.toString());
+            File file = new File(mDirectoryPathname.getPath());
             if (file.isDirectory() && file.listFiles() != null && file.listFiles().length > 0) {
                 // Display the results.
                 mView.get().displayResults(mDirectoryPathname);
@@ -268,6 +276,7 @@ public class ImagePresenter
      * A helper method that recursively deletes files in a specified
      * directory.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private Integer deleteFiles(Uri directoryPathname, int fileCount) {
         File imageDirectory = new File(directoryPathname.toString());
         File files[] = imageDirectory.listFiles();
@@ -304,5 +313,9 @@ public class ImagePresenter
     @Override
     public Context getApplicationContext() {
         return mView.get().getApplicationContext();
+    }
+
+    public WeakReference<MVP.RequiredViewOps> getView() {
+        return mView;
     }
 }

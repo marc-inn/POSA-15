@@ -16,7 +16,7 @@ import android.widget.TextView;
 import vandy.mooc.MVP;
 import vandy.mooc.R;
 import vandy.mooc.common.GenericActivity;
-import vandy.mooc.common.Utils;
+import vandy.mooc.common.util.Utils;
 import vandy.mooc.presenter.ImagePresenter;
 
 /**
@@ -217,7 +217,7 @@ public class DownloadImagesActivity
         }
 
         // Clear the URL input view.
-        mUrlEditText.setText("");
+        mUrlEditText.setText("http://lorempixel.com/200/400/");
     }
 
     /**

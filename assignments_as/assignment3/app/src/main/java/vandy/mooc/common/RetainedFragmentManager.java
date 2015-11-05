@@ -40,7 +40,7 @@ public class RetainedFragmentManager {
      */
     public RetainedFragmentManager(FragmentManager fragmentManager, String retainedFragmentTag) {
         // Store a WeakReference to the Activity.
-        mFragmentManager = new WeakReference<FragmentManager>(fragmentManager);
+        mFragmentManager = new WeakReference<>(fragmentManager);
 
         // Store the tag used to identify the RetainedFragment.
         mRetainedFragmentTag = retainedFragmentTag;
@@ -123,7 +123,7 @@ public class RetainedFragmentManager {
         /**
          * Maps keys to objects.
          */
-        private HashMap<String, Object> mData = new HashMap<String, Object>();
+        private HashMap<String, Object> mData = new HashMap<>();
 
         /**
          * Hook method called when a new instance of Fragment is

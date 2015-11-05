@@ -7,14 +7,15 @@ import android.util.LruCache;
 import android.widget.ImageView;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReentrantLock;
 
-import vandy.mooc.common.BitmapUtils;
 import vandy.mooc.common.GenericAsyncTask;
 import vandy.mooc.common.GenericAsyncTaskOps;
+import vandy.mooc.common.util.BitmapUtils;
 
 /**
  * This class loads and displays images in the background. It maintains
@@ -181,7 +182,7 @@ public class ImageLoader
         final String currCachedKey = mCacheKeysForImageView.get(imgView.getWrappedImageView()
                 .hashCode());
 
-        return currCachedKey != filepath;
+        return !Objects.equals(currCachedKey, filepath);
     }
 
     /**

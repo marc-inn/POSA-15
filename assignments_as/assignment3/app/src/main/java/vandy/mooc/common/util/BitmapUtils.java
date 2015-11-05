@@ -1,4 +1,4 @@
-package vandy.mooc.common;
+package vandy.mooc.common.util;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
@@ -70,19 +70,18 @@ public class BitmapUtils {
      * a new picture, and updates the current photo path to reflect
      * where the photo will be saved
      *
-     * @param albumDir
+     * @param albumDir directory of album
      */
     public static Intent getTakePictureIntent(File albumDir) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        File f = null;
+        File f;
 
         try {
             f = BitmapUtils.createImageFile(albumDir, JPEG_FILE_PREFIX, JPEG_FILE_SUFFIX);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
         } catch (IOException e) {
             e.printStackTrace();
-            f = null;
         }
         return takePictureIntent;
     }
@@ -149,8 +148,8 @@ public class BitmapUtils {
         // Increase the file's edit number until there isn't a
         // conflict
         while (processedImgFile.exists())
-            processedImgFile = (new File(newFilePath = newFilePath.replace(editNum + JPEG_FILE_SUFFIX,
-                    ++editNum + JPEG_FILE_SUFFIX)));
+            processedImgFile = new File(newFilePath = newFilePath.replace(editNum + JPEG_FILE_SUFFIX,
+                    ++editNum + JPEG_FILE_SUFFIX));
 
         return processedImgFile.getAbsolutePath();
     }
@@ -167,19 +166,11 @@ public class BitmapUtils {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         options.inPreferredConfig = Config.ARGB_8888;
-
-        BitmapFactory.decodeFile(pathToImageFile.toString(), options);
-        int ratio = (int) (4 * (long) options.outHeight * (long) options.outWidth * (long) 4 / (info.availMem + 1));
-
-        options.inSampleSize = ratio;
+        options.inSampleSize = (int) (4 * (long) options.outHeight * (long) options.outWidth * (long) 4 / (info.availMem + 1));
         options.inJustDecodeBounds = false;
-
-        try {
-            return BitmapFactory.decodeFile(pathToImageFile.toString(), options);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        String path = pathToImageFile.getPath();
+        File file = new File(path);
+        return BitmapFactory.decodeFile(file.getAbsolutePath(), options);
     }
 
     /**
@@ -222,7 +213,7 @@ public class BitmapUtils {
         File filePath = new File(Utils.openDirectory(directoryPathname),
                 Utils.getUniqueFilename(Uri.parse(pathToImageFile.getLastPathSegment())));
 
-        try (FileOutputStream fileOutputStream = new FileOutputStream(filePath)) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(filePath.getAbsolutePath())) {
             grayScaleImage.compress(CompressFormat.JPEG, 100, fileOutputStream);
 
             // Create a URI from the file.

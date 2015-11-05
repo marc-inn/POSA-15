@@ -18,7 +18,7 @@ public class ImageViewHolder {
      * Constructor initializes the field.
      */
     public ImageViewHolder(ImageView imgView) {
-        mImgView = new WeakReference<ImageView>(imgView);
+        mImgView = new WeakReference<>(imgView);
     }
 
     /**

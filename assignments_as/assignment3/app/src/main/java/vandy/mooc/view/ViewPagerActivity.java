@@ -105,7 +105,7 @@ public class ViewPagerActivity extends FragmentActivity {
 
         // If the intent exists and contains the filepath, extract its
         // data
-        if (intent != null && intent.getDataString() != null) {
+        if (intent.getDataString() != null) {
             mCurrentImage = intent.getIntExtra(CURRENT_IMAGE_POSITION, 0);
             mFilePath = intent.getDataString();
         }

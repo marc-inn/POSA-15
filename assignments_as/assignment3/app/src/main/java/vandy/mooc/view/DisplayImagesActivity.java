@@ -27,7 +27,7 @@ public class DisplayImagesActivity extends LifecycleLoggingActivity {
     /**
      * Name of the Intent Action that wills start this Activity.
      */
-    public static String ACTION_DISPLAY_IMAGES = "android.intent.action.DISPLAY_IMAGES";
+    public final static String ACTION_DISPLAY_IMAGES = "android.intent.action.DISPLAY_IMAGES";
     /**
      * A reasonable column width.
      */
@@ -119,20 +119,17 @@ public class DisplayImagesActivity extends LifecycleLoggingActivity {
      */
     public class ImageAdapter extends BaseAdapter {
         /**
-         * File path of the directory holding the images to display
-         */
-        private String mFilePath = null;
-
-        /**
          * The Context of the application
          */
-        private Context mContext;
-
+        private final Context mContext;
         /**
          * The padding each image will have around it
          */
-        private int mPadding = 0;
-
+        private final int mPadding = 0;
+        /**
+         * File path of the directory holding the images to display
+         */
+        private String mFilePath = null;
         /**
          * The image files being displayed
          */

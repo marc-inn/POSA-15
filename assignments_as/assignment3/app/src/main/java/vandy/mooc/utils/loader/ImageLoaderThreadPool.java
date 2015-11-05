@@ -1,5 +1,7 @@
 package vandy.mooc.utils.loader;
 
+import android.support.annotation.NonNull;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -24,7 +26,7 @@ public class ImageLoaderThreadPool {
     private static final ThreadFactory sThreadFactory = new ThreadFactory() {
         private final AtomicInteger mCount = new AtomicInteger(1);
 
-        public Thread newThread(Runnable r) {
+        public Thread newThread(@NonNull Runnable r) {
             return new Thread(r, "AsyncTask #" + mCount.getAndIncrement());
         }
     };
@@ -32,7 +34,7 @@ public class ImageLoaderThreadPool {
     /**
      * Queue of tasks to execute
      */
-    private static final BlockingQueue<Runnable> sPoolWorkQueue = new LinkedBlockingQueue<Runnable>(
+    private static final BlockingQueue<Runnable> sPoolWorkQueue = new LinkedBlockingQueue<>(
             MAXIMUM_POOL_SIZE);
 
     /**

@@ -1,10 +1,11 @@
-package vandy.mooc.common;
+package vandy.mooc.common.util;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.IBinder;
@@ -132,7 +133,7 @@ public class Utils {
      * @return true if copy completed without being interrupted, else false
      * @throws IOException
      */
-    public static boolean interruptibleCopy(InputStream inputStream, OutputStream outputStream)
+    public static boolean incorruptibleCopy(InputStream inputStream, OutputStream outputStream)
             throws IOException {
         final byte[] buffer = new byte[1024];
 
@@ -187,7 +188,7 @@ public class Utils {
      * directory, else null.
      */
     public static File openDirectory(Uri directoryPathname) {
-        File d = new File(directoryPathname.toString());
+        File d = new File(directoryPathname.getPath());
         if (!d.exists() && !d.mkdir()) return null;
         else return d;
     }
@@ -195,26 +196,25 @@ public class Utils {
     /**
      * Download store a song into a file on the device.
      *
-     * @param context           The context in which to write the file.
      * @param url               URL to the resource (e.g., local or remote file).
      * @param fileName          Name of the file.
      * @param directoryPathname Pathname of the directory to write the file.
      * @return Absolute path to the downloaded song file on the file
      * system.
      */
-    public static Uri createDirectoryAndSaveFile(Context context,
-                                                 URL url,
-                                                 Uri fileName,
-                                                 Uri directoryPathname) {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static Uri createDirectoryAndSaveFile(URL url, Uri fileName, Uri directoryPathname) {
         try {
             // Bail out of we get an invalid bitmap.
             if (url == null || fileName == null) return null;
 
             // Create a directory path.
-            File directoryPath = new File(directoryPathname.toString());
+            File directoryPath = new File(directoryPathname.getPath());
 
             // If the directory doesn't exist already then create it.
-            if (!directoryPath.exists()) directoryPath.mkdirs();
+            if (!directoryPath.exists()) {
+                directoryPath.mkdirs();
+            }
 
             // Create a filePath within the directoryPath.
             File file = new File(directoryPath, getUniqueFilename(fileName));
@@ -227,18 +227,14 @@ public class Utils {
             try (InputStream is = (InputStream) url.getContent();
                  OutputStream os = new FileOutputStream(file)) {
                 // Copy input to output.
-                interruptibleCopy(is, os);
+                incorruptibleCopy(is, os);
 
                 // Set the modified date to enable cancellation.
                 file.setLastModified(System.currentTimeMillis());
-            } catch (InterruptedIOException iioe) {
-                iioe.printStackTrace();
+            } catch (InterruptedIOException e) {
+                e.printStackTrace();
             }
-
-            // Get the absolute path of the song.
-            String absolutePathTosong = file.getAbsolutePath();
-
-            return Uri.parse(absolutePathTosong);
+            return Uri.fromFile(file);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -269,5 +265,12 @@ public class Utils {
         //
         // return Base64.encodeToString(filename.getBytes(),
         // Base64.NO_WRAP);
+    }
+
+    public static boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(
+                Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo()
+                .isConnected();
     }
 }

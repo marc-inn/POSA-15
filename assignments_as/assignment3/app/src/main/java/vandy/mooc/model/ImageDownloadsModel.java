@@ -6,6 +6,7 @@ import android.net.Uri;
 import java.lang.ref.WeakReference;
 
 import vandy.mooc.MVP;
+import vandy.mooc.common.util.DownloadUtils;
 
 /**
  * This class plays the "Model" role in the Model-View-Presenter (MVP)
@@ -63,7 +64,6 @@ public class ImageDownloadsModel implements MVP.ProvidedModelOps {
      * system.
      */
     public Uri downloadImage(Context context, Uri url, Uri directoryPathname) {
-        // @@ TODO -- You fill in here, replacing "null" with the appropriate code.
-        return null;
+        return DownloadUtils.downloadImage(context, url, directoryPathname);
     }
 }

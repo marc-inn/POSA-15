@@ -8,4 +8,6 @@
     <string name="defaultURL">http://www.dre.vanderbilt.edu/~schmidt/robot.png;http://www.dre.vanderbilt.edu/~schmidt/ka.png</string>
     <string name="detailed_picture_view_desc_string">desc</string>
     <string name="swipe_activity">SwipeListDisplay</string>
+    <string name="check_internet_connection">Please check internet connection</string>
+    <string name="grey_scale_task_cannot_be_started">Grey Scale Task cannot be started</string>
 </resources>
